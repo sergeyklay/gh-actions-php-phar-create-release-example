@@ -87,7 +87,7 @@ jobs:
         id: get-version
         run: |
           echo ::set-output name=version::${GITHUB_REF#refs/tags/}
-          echo Pushing version ${{ steps.get-version.outputs.version }}
+          echo 'Pushing version ${{ steps.get-version.outputs.version }}'
 
       - name: Get Application Version
         # Self-test
@@ -98,11 +98,11 @@ jobs:
         uses: sondreb/action-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: example.phar
+          files: 'example.phar'
           folder: "${{github.workspace}}/"
           tag: ${{ github.ref }}
           name: ${{ steps.get-version.outputs.version }}
-          body: 'ANext stable release.'
+          body: 'Next stable release.'
           draft: false
           prerelease: false
 
