@@ -95,16 +95,28 @@ jobs:
           ./example.phar --version
 
       - name: Create Release
-        uses: sondreb/action-release@master
+        uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: 'example.phar'
-          folder: './'
-          tag: ${{ steps.get-version.outputs.version }}
           name: ${{ steps.get-version.outputs.version }}
+          tag: ${{ steps.get-version.outputs.version }}
           body: 'Next stable release.'
-          draft: true
-          prerelease: false
+          allowUpdates: true
+          artifact: example.phar
+          artifactContentType: application/x-php
+
+      # - name: Create Release
+      #   uses: sondreb/action-release@master
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     files: 'example.phar'
+      #     folder: './'
+      #     tag: ${{ steps.get-version.outputs.version }}
+      #     name: ${{ steps.get-version.outputs.version }}
+      #     body: 'Next stable release.'
+      #     # This will create a draft
+      #     draft: true
+      #     prerelease: false
 
       # - name: Upload Release Asset
       #   id: upload-release-asset
