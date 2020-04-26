@@ -44,14 +44,9 @@ jobs:
         with:
           fetch-depth: 5
 
-      - name: Common Settings
-        run: |
-          # Hide "You are in 'detached HEAD' state" message
-          git config --global advice.detachedHead false
-
       - name: Get Composer Cache Directory
         id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+        run: echo ::set-output name=dir::$(composer config cache-files-dir)
 
       - name: Setup Composer Cache
         uses: actions/cache@v1
@@ -64,18 +59,14 @@ jobs:
             ${{ runner.os }}-
 
       - name: Setup Composer Token
-        run: |
-          # To increase the GitHub rate limit we're use GitHub authentication
-          if [ -n "${{ secrets.COMPOSER_TOKEN }}" ]; then
-            composer config github-oauth.github.com "${{ secrets.COMPOSER_TOKEN }}"
-          fi
+        if: ${{ secrets.COMPOSER_TOKEN }}
+        run: composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
 
       - name: Install Project Dependencies
         run: composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest
 
       - name: Fast Commands Test
-        run: |
-          ./example Hello World
+        run: ./example Hello World
 
       - name: Success Reporting
         if: success()
