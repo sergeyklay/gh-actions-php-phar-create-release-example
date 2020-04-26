@@ -99,7 +99,6 @@ jobs:
           # referencing it's ID to get its outputs object,
           # which include a 'upload_url'.  See this blog post for more info:
           # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./my-artifact.zip
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ./example.phar
           asset_name: example.phar
