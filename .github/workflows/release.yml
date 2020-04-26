@@ -85,7 +85,9 @@ jobs:
 
       - name: Get Git Version
         id: get-version
-        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+        run: |
+          echo ::set-output name=version::${GITHUB_REF#refs/tags/}
+          echo Pushing version ${{ steps.get-version.outputs.version }}
 
       - name: Get Application Version
         # Self-test
@@ -96,11 +98,11 @@ jobs:
         uses: sondreb/action-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: 'example.phar'
+          files: example.phar
           folder: "${{github.workspace}}/"
           tag: ${{ github.ref }}
-          name: ${{ steps.get-version.outputs.VERSION }}
-          body: 'All notable changes to this version has been documented in the CHANGELOG.md file.'
+          name: ${{ steps.get-version.outputs.version }}
+          body: 'ANext stable release.'
           draft: false
           prerelease: false
 
