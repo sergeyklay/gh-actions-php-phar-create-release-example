@@ -60,7 +60,7 @@ jobs:
 
       - name: Setup Composer Token
         run: |
-          if [ ! -z "${{ secrets.COMPOSER_TOKEN }}"]; then
+          if [ ! -z "${{ secrets.COMPOSER_TOKEN }}" ]; then
             composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
           fi
 
