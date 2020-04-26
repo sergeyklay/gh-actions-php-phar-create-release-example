@@ -1,0 +1,40 @@
+{
+    "name": "sergeyklay/gh-actions-php-phar-create-release-example",
+    "description": "An example project to show how to create release using GitHub Actions and PHP PHAR",
+    "keywords": [
+	"phar",
+	"github",
+	"release",
+	"example"
+    ],
+    "license": "MIT",
+    "authors": [
+	{
+	    "name": "Serghei Iakovlev",
+	    "email": "egrep@protonmail.ch"
+	}
+    ],
+    "require": {
+	"php": ">=7.0.0"
+    },
+    "config": {
+	"optimize-autoloader": true,
+	"platform": {},
+	"preferred-install": "dist",
+	"sort-packages": true
+    },
+    "autoload": {
+	"psr-4": {
+	    "Ppcre\\": "src"
+	}
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "bin": [
+	"example"
+    ],
+    "support": {
+	"issues": "https://github.com/sergeyklay/gh-actions-php-phar-create-release-example/issues?state=open",
+	"source": "https://github.com/sergeyklay/gh-actions-php-phar-create-release-example"
+    }
+}
