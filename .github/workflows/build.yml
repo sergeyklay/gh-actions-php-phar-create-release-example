@@ -35,8 +35,8 @@ jobs:
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
-        coverage: none
         with:
+          coverage: none
           php-version: ${{ matrix.php }}
 
       - name: Checkout code
