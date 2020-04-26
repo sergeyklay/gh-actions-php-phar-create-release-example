@@ -35,13 +35,8 @@ jobs:
           coverage: none
           ini-values: memory_limit=1G, phar.readonly=0
 
-      - name: Common settings
-        run: |
-          git config --global user.name cicdbot
-          git config --global user.email team@zephir-lang.com
-
-          # Choose a suitable PHP version to build PHAR
-          composer config platform.php 7.0.33
+      - name: Choose a Suitable PHP Version to Build PHAR
+        run: composer config platform.php 7.0.33
 
       - name: Get Composer Cache Directory
         id: composer-cache
@@ -82,9 +77,7 @@ jobs:
 
       - name: Get Git Version
         id: get-version
-        run: |
-          echo ::set-output name=version::${GITHUB_REF#refs/tags/}
-          echo 'Pushing version ${{ steps.get-version.outputs.version }}'
+        run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
 
       - name: Self-Test
         run: ./example.phar --version
@@ -98,5 +91,5 @@ jobs:
           body: 'Next stable release.'
           # This will update existing tags if any
           allowUpdates: true
-          artifact: example.phar
+          artifacts: example.phar
           artifactContentType: application/x-php
