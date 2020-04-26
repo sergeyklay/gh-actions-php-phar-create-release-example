@@ -41,21 +41,19 @@ jobs:
 
       - name: Get Composer Cache Directory
         id: composer-cache
-        run: echo ::set-output name=dir::'$(composer config cache-files-dir)'
+        run: echo ::set-output name=dir::$(composer config cache-files-dir)
 
       - name: Setup Composer Cache
         uses: actions/cache@v1
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys:
-            ${{ runner.os }}-composer-${{ env.cache-name }}-
+          restore-keys: |
             ${{ runner.os }}-composer-
-            ${{ runner.os }}-
 
       - name: Setup Composer Token
         run: |
-          if [ ! -z "${{ secrets.COMPOSER_TOKEN }}" ]; then
+          if [ ! -z '${{ secrets.COMPOSER_TOKEN }}' ]; then
             composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
           fi
 
