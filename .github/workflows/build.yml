@@ -35,6 +35,7 @@ jobs:
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
+        coverage: none
         with:
           php-version: ${{ matrix.php }}
 
@@ -57,7 +58,17 @@ jobs:
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-composer-
+          restore-keys:
+            ${{ runner.os }}-composer-${{ env.cache-name }}-
+            ${{ runner.os }}-composer-
+            ${{ runner.os }}-
+
+      - name: Setup Composer Token
+        run: |
+          # To increase the GitHub rate limit we're use GitHub authentication
+          if [ -n "${{ secrets.COMPOSER_TOKEN }}" ]; then
+            composer config github-oauth.github.com "${{ secrets.COMPOSER_TOKEN }}"
+          fi
 
       - name: Install project dependencies
         run: composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest
