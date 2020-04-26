@@ -70,13 +70,13 @@ jobs:
             composer config github-oauth.github.com "${{ secrets.COMPOSER_TOKEN }}"
           fi
 
-      - name: Install project dependencies
+      - name: Install Project Dependencies
         run: composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest
 
       - name: Fast Commands Test
         run: |
           ./example Hello World
 
-      - name: Success reporting
+      - name: Success Reporting
         if: success()
         run: git log --format=fuller -5
