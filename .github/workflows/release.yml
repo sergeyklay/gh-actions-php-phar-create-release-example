@@ -100,7 +100,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ steps.get-version.outputs.VERSION }}
+          release_name: Test # ${{ steps.get-version.outputs.VERSION }}
           body: 'All notable changes to this version has been documented in the CHANGELOG.md file.'
           draft: false
           prerelease: false
