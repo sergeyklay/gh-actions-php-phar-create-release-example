@@ -19,7 +19,7 @@ class Application
     public function __construct(array $argv = [])
     {
         $this->argv = $argv;
-        $this->argc = count($argv);
+        $this->argc = \count($argv);
     }
 
     public function say()
