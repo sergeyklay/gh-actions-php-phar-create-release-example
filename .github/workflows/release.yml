@@ -1,0 +1,106 @@
+# This file is part of the PPCRE.
+#
+# (c) Serghei Iakovlev <egrep@protonmail.ch>
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
+name: release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set environment variables
+        uses: allenevans/set-env@v1.0.0
+        with:
+          BOX_VERSION: '3.8.4'
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.2'
+          extensions: intl, zip, zlib
+          coverage: none
+          ini-values: memory_limit=1G, phar.readonly=0
+
+      - name: Common settings
+        run: |
+          git config --global user.name cicdbot
+          git config --global user.email team@zephir-lang.com
+
+          # Choose a suitable PHP version to build PHAR
+          composer config platform.php 7.0.33
+
+      - name: Setup Composer Token
+        run: |
+          # To increase the GitHub rate limit we're use GitHub authentication
+          if [ -n "${{ secrets.COMPOSER_TOKEN }}" ]; then
+            composer config github-oauth.github.com "${{ secrets.COMPOSER_TOKEN }}"
+          fi
+
+      - name: Install Box
+        run: |
+          wget \
+            "https://github.com/humbug/box/releases/download/${BOX_VERSION}/box.phar" \
+            --quiet \
+            -O ./box
+
+          chmod +x ./box
+          sudo mv ./box /usr/local/bin
+
+      - name: Build Zephir PHAR
+        run: |
+          .github/build-phar.sh
+          ls -al ./example.phar
+          cat ".git/${{ github.ref }}"
+
+      - name: Get Git Version
+        id: get-version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - name: Get Application Version
+        # Self-test
+        run: |
+          ./example.phar --version
+
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@latest
+        env:
+          # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ steps.get-version.outputs.VERSION }}
+          body: 'All notable changes to this version has been documented in the CHANGELOG.md file.'
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # This pulls from the 'Create Release' step above,
+          # referencing it's ID to get its outputs object,
+          # which include a 'upload_url'.  See this blog post for more info:
+          # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./my-artifact.zip
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./example.phar
+          asset_name: example.phar
+          asset_content_type: application/x-php
