@@ -99,8 +99,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: 'example.phar'
-          folder: "${{github.workspace}}/"
-          tag: ${{ github.ref }}
+          folder: './'
+          tag: ${{ steps.get-version.outputs.version }}
           name: ${{ steps.get-version.outputs.version }}
           body: 'Next stable release.'
           draft: false
