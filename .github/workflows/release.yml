@@ -17,12 +17,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set environment variables
+      - name: Set Environment Variables
         uses: allenevans/set-env@v1.0.0
         with:
           BOX_VERSION: '3.8.4'
 
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
         with:
           fetch-depth: 5
@@ -35,6 +35,7 @@ jobs:
           coverage: none
           ini-values: memory_limit=1G, phar.readonly=0
 
+      # Ensure that deps will work on lowest supported PHP version
       - name: Choose a Suitable PHP Version to Build PHAR
         run: composer config platform.php 7.0.33
 
@@ -59,7 +60,7 @@ jobs:
             composer config github-oauth.github.com "${{ secrets.COMPOSER_TOKEN }}"
           fi
 
-      - name: Install project dependencies
+      - name: Install Project Dependencies
         run: composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest
 
       - name: Install Box
