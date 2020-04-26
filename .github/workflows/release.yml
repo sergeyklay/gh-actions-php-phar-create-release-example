@@ -94,29 +94,29 @@ jobs:
 
       - name: Create Release
         id: create-release
-        uses: actions/create-release@latest
-        env:
-          # This token is provided by Actions, you do not need to create your own token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/action-release@master
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Test # ${{ steps.get-version.outputs.VERSION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: 'example.phar'
+          folder: "${{github.workspace}}/"
+          tag: ${{ github.ref }}
+          name: ${{ steps.get-version.outputs.VERSION }}
           body: 'All notable changes to this version has been documented in the CHANGELOG.md file.'
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          # This token is provided by Actions, you do not need to create your own token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          # This pulls from the 'Create Release' step above,
-          # referencing it's ID to get its outputs object,
-          # which include a 'upload_url'.  See this blog post for more info:
-          # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ./example.phar
-          asset_name: example.phar
-          asset_content_type: application/x-php
+      # - name: Upload Release Asset
+      #   id: upload-release-asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     # This token is provided by Actions, you do not need to create your own token
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     # This pulls from the 'Create Release' step above,
+      #     # referencing it's ID to get its outputs object,
+      #     # which include a 'upload_url'.  See this blog post for more info:
+      #     # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+      #     upload_url: ${{ steps.create-release.outputs.upload_url }}
+      #     asset_path: ./example.phar
+      #     asset_name: example.phar
+      #     asset_content_type: application/x-php
