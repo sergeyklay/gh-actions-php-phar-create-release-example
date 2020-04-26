@@ -78,10 +78,7 @@ jobs:
           sudo mv ./box /usr/local/bin
 
       - name: Build Application PHAR
-        run: |
-          .github/build-phar.sh
-          ls -al ./example.phar
-          cat ".git/${{ github.ref }}"
+        run: .github/build-phar.sh
 
       - name: Get Git Version
         id: get-version
@@ -89,10 +86,8 @@ jobs:
           echo ::set-output name=version::${GITHUB_REF#refs/tags/}
           echo 'Pushing version ${{ steps.get-version.outputs.version }}'
 
-      - name: Get Application Version
-        # Self-test
-        run: |
-          ./example.phar --version
+      - name: Self-Test
+        run: ./example.phar --version
 
       - name: Create Release
         uses: ncipollo/release-action@v1
@@ -101,35 +96,7 @@ jobs:
           name: ${{ steps.get-version.outputs.version }}
           tag: ${{ steps.get-version.outputs.version }}
           body: 'Next stable release.'
+          # This will update existing tags if any
           allowUpdates: true
           artifact: example.phar
           artifactContentType: application/x-php
-
-      # - name: Create Release
-      #   uses: sondreb/action-release@master
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     files: 'example.phar'
-      #     folder: './'
-      #     tag: ${{ steps.get-version.outputs.version }}
-      #     name: ${{ steps.get-version.outputs.version }}
-      #     body: 'Next stable release.'
-      #     # This will create a draft
-      #     draft: true
-      #     prerelease: false
-
-      # - name: Upload Release Asset
-      #   id: upload-release-asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     # This token is provided by Actions, you do not need to create your own token
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     # This pulls from the 'Create Release' step above,
-      #     # referencing it's ID to get its outputs object,
-      #     # which include a 'upload_url'.  See this blog post for more info:
-      #     # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-      #     upload_url: ${{ steps.create-release.outputs.upload_url }}
-      #     asset_path: ./example.phar
-      #     asset_name: example.phar
-      #     asset_content_type: application/x-php
