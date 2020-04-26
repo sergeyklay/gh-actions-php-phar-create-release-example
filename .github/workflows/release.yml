@@ -43,12 +43,29 @@ jobs:
           # Choose a suitable PHP version to build PHAR
           composer config platform.php 7.0.33
 
-      - name: Setup Composer Token
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Setup Composer Cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys:
+            ${{ runner.os }}-composer-${{ env.cache-name }}-
+            ${{ runner.os }}-composer-
+            ${{ runner.os }}-
+
+      - name: Setup GitHub Token
         run: |
           # To increase the GitHub rate limit we're use GitHub authentication
           if [ -n "${{ secrets.COMPOSER_TOKEN }}" ]; then
             composer config github-oauth.github.com "${{ secrets.COMPOSER_TOKEN }}"
           fi
+
+      - name: Install project dependencies
+        run: composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest
 
       - name: Install Box
         run: |
