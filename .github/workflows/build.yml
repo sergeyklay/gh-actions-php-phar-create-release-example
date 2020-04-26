@@ -9,6 +9,8 @@ name: build
 
 on:
   push:
+    tags-ignore:
+      - '*'
     paths-ignore:
       - '**.md'
       - '**.txt'
