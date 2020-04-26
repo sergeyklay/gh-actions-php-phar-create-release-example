@@ -93,8 +93,7 @@ jobs:
           ./example.phar --version
 
       - name: Create Release
-        id: create-release
-        uses: actions/action-release@master
+        uses: sondreb/action-release@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: 'example.phar'
