@@ -54,8 +54,10 @@ jobs:
             ${{ runner.os }}-
 
       - name: Setup Composer Token
-        if: secrets.COMPOSER_TOKEN
-        run: composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
+        run: |
+          if [ ! -z "${{ secrets.COMPOSER_TOKEN }}"]; then
+            composer config github-oauth.github.com ${{ secrets.COMPOSER_TOKEN }}
+          fi
 
       - name: Install Project Dependencies
         run: composer install --prefer-dist --no-interaction --no-ansi --no-progress --no-suggest
