@@ -76,7 +76,7 @@ jobs:
       - name: Build Application PHAR
         run: .github/build-phar.sh
 
-      - name: Get Git Version
+      - name: Geting Tag Name
         id: get-version
         run: echo ::set-output name=version::${GITHUB_REF#refs/tags/}
 
@@ -86,6 +86,8 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
+          # This token is provided by GitHub Actions.
+          # You DO NOT need to create your own token.
           token: ${{ secrets.GITHUB_TOKEN }}
           name: ${{ steps.get-version.outputs.version }}
           tag: ${{ steps.get-version.outputs.version }}
